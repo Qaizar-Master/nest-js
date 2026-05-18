@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 
 @Controller('property')
@@ -13,9 +13,20 @@ export class PropertyController {
     // whitelist here, makes it so that other than keywords in CreatePropertyDto if found are ignored.
     // @HttpCode(201) // To give the code u want to 
     create(
-        @Body(new ValidationPipe({whitelist : true})) 
+        @Body(new ValidationPipe({whitelist : true, groups : ['create']})) 
         body : CreatePropertyDto)
         {
+        return body;
+    }
+
+    @Patch(":id")
+    update(@Body(new ValidationPipe({
+        whitelist : true, 
+        groups : ['update'],
+        always : true
+    }))
+    body : CreatePropertyDto)
+    {
         return body;
     }
 
@@ -46,9 +57,6 @@ export class PropertyController {
         console.log(typeof sort)
         return  id;
     }
-
-
-
 
 }
  
