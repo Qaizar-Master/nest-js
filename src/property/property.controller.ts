@@ -1,33 +1,46 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, ParseUUIDPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
+import { PropertyService } from './property.service';
+import { UpdatePropertyDto } from './dto/updatePropertyDto';
 
 @Controller('property')
 export class PropertyController {
 
+    constructor(private propertyService : PropertyService) {}
+
     @Get()
     findAll(){
-        return "all properties";
+        return this.propertyService.findAll();
     }
 
     @Post()
     // whitelist here, makes it so that other than keywords in CreatePropertyDto if found are ignored.
     // @HttpCode(201) // To give the code u want to 
     create(
-        @Body(new ValidationPipe({whitelist : true, groups : ['create']})) 
-        body : CreatePropertyDto)
+        @Body()
+        dto : CreatePropertyDto)
         {
-        return body;
+        return this.propertyService.create(dto);
     }
 
-    @Patch(":id")
-    update(@Body(new ValidationPipe({
-        whitelist : true, 
-        groups : ['update'],
-        always : true
-    }))
-    body : CreatePropertyDto)
-    {
-        return body;
+    // @Patch(":id")
+    // update(@Body(new ValidationPipe({
+    //     whitelist : true, 
+    //     groups : ['update'],
+    //     always : true
+    // }))
+    // body : CreatePropertyDto)
+    // {
+    //     return body;
+    // }
+
+    @Patch(':id')
+        update(
+            @Param('id', ParseIntPipe) id: number, 
+            @Body(new ValidationPipe({ whitelist: true })) body: UpdatePropertyDto 
+        ) {
+            console.log('Validated Body reaching service:', body);
+            return this.propertyService.update(id, body);
     }
 
     // to get multiple dynamics
@@ -51,12 +64,23 @@ export class PropertyController {
     
     // we need to make id number so we do : ParseIntPipe
     // we need to make sort boolean so we do : ParseBoolPipe
-    @Get(":id")
-    findOne(@Param("id", ParseIntPipe) id, @Query("sort", ParseBoolPipe) sort){
-        console.log(typeof id)
-        console.log(typeof sort)
-        return  id;
+    // @Get(":id")
+    // findOne(@Param("id", ParseIntPipe) id, @Query("sort", ParseBoolPipe) sort){
+    //     console.log(typeof id)
+    //     console.log(typeof sort)
+    //     return  id;
+    // }
+
+    @Get(':id')
+    findOne(@Param('id', ParseIntPipe) id){
+        return this.propertyService.findOne(id);
+    }
+
+
+    @Delete(':id')
+    delete(
+        @Param('id', ParseIntPipe) id){
+        return this.propertyService.delete(id);
     }
 
 }
- 

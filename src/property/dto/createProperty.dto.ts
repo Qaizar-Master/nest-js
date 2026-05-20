@@ -7,12 +7,13 @@ export class CreatePropertyDto {
     name!: string;
 
     @IsString()
-    @Length(2,10,{groups: ['create']})
-    @Length(1,15,{groups: ['update']}) // note: here 1-15 is the patch change.
     description!: string;
 
     @IsInt()
     @IsPositive()
     area!: number;
 
+    @IsInt()
+    @IsPositive()
+    price!: number;
 }
