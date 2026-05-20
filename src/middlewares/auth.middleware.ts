@@ -1,7 +1,7 @@
 // for multiple middlewares to be added to the routes.
 
 import { Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common";
-import { NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 
 function VerifyJwtToken(token : string){
     return true;
